@@ -15,6 +15,7 @@ public class VoxelGrid : MonoBehaviour
     private List<Block> _currentBlocks => _blocks.Where(b => b.State != BlockState.Placed).ToList();
     #endregion
 
+    private GameObject _goVoxelPrefab;
     public Vector3Int GridSize;
     public Voxel[,,] Voxels;
     public Corner[,,] Corners;
@@ -24,7 +25,13 @@ public class VoxelGrid : MonoBehaviour
     public Vector3 Corner;
     private Vector3Int gridDimensions;
 
+
+
+
+
     public float VoxelSize { get; private set; }
+
+
 
     #endregion
 
@@ -96,8 +103,43 @@ public class VoxelGrid : MonoBehaviour
     /// <summary>
     /// Return all blocks that are not allready place in the grid
     /// </summary>
+    public VoxelGrid(Vector3Int gridDimensions, float voxelSize)
+    {
+        GridSize = gridDimensions;
+        _goVoxelPrefab = Resources.Load("Prefabs/VoxelCube") as GameObject;
+        VoxelSize = voxelSize;
+        Origin = Vector3.zero;
+        CreateVoxelGrid();
+    }
 
+    public VoxelGrid(Vector3Int gridDimensions, float voxelSize, Vector3 origin)
+    {
+        GridSize = gridDimensions;
+        _goVoxelPrefab = Resources.Load("Prefabs/VoxelCube") as GameObject;
+        VoxelSize = voxelSize;
+        Origin = origin;
 
+        CreateVoxelGrid();
+    }
+
+    private void CreateVoxelGrid()
+    {
+        Voxels = new Voxel[GridSize.x, GridSize.y, GridSize.z];
+        for (int x = 0; x < GridSize.x; x++)
+        {
+            for (int y = 0; y < GridSize.y; y++)
+            {
+                for (int z = 0; z < GridSize.z; z++)
+                {
+                    Voxels[x, y, z] = new Voxel(new Vector3Int(x, y, z), _goVoxelPrefab, 1f);
+                }
+            }
+        }
+
+        MakeFaces();
+        MakeCorners();
+        MakeEdges();
+    }
 
 
     #region Constructors
@@ -166,12 +208,7 @@ public class VoxelGrid : MonoBehaviour
         MakeEdges();
     }
 
-    public VoxelGrid(Vector3Int gridDimensions, float voxelSize, Vector3 origin)
-    {
-        this.gridDimensions = gridDimensions;
-        VoxelSize = voxelSize;
-        Origin = origin;
-    }
+ 
 
     #endregion
 
