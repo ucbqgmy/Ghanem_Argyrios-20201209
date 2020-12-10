@@ -110,7 +110,7 @@ public class Voxel : IEquatable<Voxel>
     public void ShowDirection()
     {
         if (Direction == null) return;
-
+        //DO THIS!!!!
     }
     /// <summary>
     /// Generic constructor, alllows the use of inheritance

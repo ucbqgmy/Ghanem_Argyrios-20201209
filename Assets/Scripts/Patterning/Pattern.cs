@@ -54,8 +54,6 @@ public class PatternManager
                      new Vector3Int(0, 0, 0),
                     new Vector3Int(1, 0, 0),
       
-        
-
                 },
                 PatternType.PatternB
                 );
@@ -84,6 +82,11 @@ public class PatternManager
     /// <param name="type">The type to look for</param>
     /// <returns>The pattern linked to the type. Will return null if the type is never defined</returns>
     public static Pattern GetPatternByType(PatternType type) => Patterns.First(p => p.Type == type);
+
+    public static Pattern GetPatternByLength(int length)
+    {
+        return Patterns.First(p => p.Indices.Count() == length);
+    }
 }
 /// <summary>
 /// The pattern that defines a block. Object of this class should only be made in the PatternManager

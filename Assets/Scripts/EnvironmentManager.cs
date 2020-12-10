@@ -28,7 +28,7 @@ public class EnvironmentManager : MonoBehaviour
 
     public VoxelGrid VGrid;
 
- public VoxelGrid CreateVoxelGrid(Vector3Int gridDimensions, float voxelSize, Vector3 origin)
+    public VoxelGrid CreateVoxelGrid(Vector3Int gridDimensions, float voxelSize, Vector3 origin)
     {
         VGrid = new VoxelGrid(gridDimensions, _voxelSize, origin);
         return VGrid;
@@ -40,12 +40,12 @@ public class EnvironmentManager : MonoBehaviour
 
     #region Unity methods
 
-//public void Start()
-//    {
-//        //01 Create a basic VoxelGrid
-//        //_voxelGrid = new VoxelGrid(new Vector3Int(10, 1, 10), transform.position, 1f);
-//        VGrid = new VoxelGrid(_gridDimensions, _voxelSize, transform.position);
-//    }
+    public void Start()
+    {
+        //01 Create a basic VoxelGrid
+        _voxelGrid = new VoxelGrid(new Vector3Int(10, 1, 10), transform.position, 1f);
+        //VGrid = new VoxelGrid(_gridDimensions, _voxelSize, transform.position);
+    }
 
     public void Update()
     {
@@ -55,10 +55,10 @@ public class EnvironmentManager : MonoBehaviour
             SetClickedAsTarget();
         }
 
-       /* if (Input.GetMouseButtonDown(0))
-        {
-            HandleRaycast(Input.mousePosition);
-        } */
+        /* if (Input.GetMouseButtonDown(0))
+         {
+             HandleRaycast(Input.mousePosition);
+         } */
 
 
     }
@@ -87,7 +87,7 @@ public class EnvironmentManager : MonoBehaviour
                 // Add face to list
                 faces.Add(face);
             }
-            
+
         }
 
         // Create the edges from the graph using the faces (the voxels are the vertices)
@@ -119,6 +119,13 @@ public class EnvironmentManager : MonoBehaviour
         return possibleNeighbours[index];
     }
 
+    public void StartFlow()
+    {
+        SetPathDirection();
+        //Starts flow coroutine
+            //Runs over the flowStep till the entire grid is filled 
+
+    }
     public void FlowStep()
     {
         Voxel nextVoxel = NextVoxel();
@@ -155,7 +162,7 @@ public class EnvironmentManager : MonoBehaviour
                 Vector3Int nextIndex = currentIndex + undefinedVoxel.Direction;
                 //first check if next index is within bounds of the grid
                 //check if voxel on nextIndex is still undefined
-                if (_voxelGrid.GetVoxelByIndex(nextIndex).Direction == undefinedVoxel.Direction)
+                if (Util.CheckBounds(nextIndex, _voxelGrid) && _voxelGrid.GetVoxelByIndex(nextIndex).Direction == undefinedVoxel.Direction)
                 {
                     counter++;
                 }
@@ -163,10 +170,19 @@ public class EnvironmentManager : MonoBehaviour
             }
 
             //Get list of blocklengths out of your pattern list
+            List<int> blockLenghts = PatternManager.Patterns.Select(p => p.Indices.Count()).ToList();
             //loop over blocklengths, big to small
-                //if blocklength < counter
-                    //place block with undefinedVoxel as anhor and undefinedVoxel direction as direction
-                        //In your blockclass in placeblock: set all voxel to undefined == false
+            blockLenghts.OrderByDescending(i => i);
+            foreach (var blockLenght in blockLenghts)
+            {
+                if (blockLenght < counter)
+                {
+                    _voxelGrid.AddBlock(undefinedVoxel.Index, Quaternion.Euler(undefinedVoxel.Direction));
+                }
+            }
+            //if blocklength < counter
+            //place block with undefinedVoxel as anhor and undefinedVoxel direction as direction
+            //In your blockclass in placeblock: set all voxel to undefined == false
         }
     }
     // Create the method to calculate the shortest path
