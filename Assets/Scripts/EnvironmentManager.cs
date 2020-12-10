@@ -28,23 +28,24 @@ public class EnvironmentManager : MonoBehaviour
 
     public VoxelGrid VGrid;
 
-    public VoxelGrid CreateVoxelGrid(Vector3Int gridDimensions, float voxelSize, Vector3 origin)
+ public VoxelGrid CreateVoxelGrid(Vector3Int gridDimensions, float voxelSize, Vector3 origin)
     {
-        VGrid = new VoxelGrid(gridDimensions, voxelSize, origin);
+        VGrid = new VoxelGrid(gridDimensions, _voxelSize, origin);
         return VGrid;
     }
+
 
     #endregion
 
 
     #region Unity methods
 
-    public void Start()
-    {
-        //01 Create a basic VoxelGrid
-        _voxelGrid = new VoxelGrid(new Vector3Int(10, 1, 10), transform.position, 1f);
-
-    }
+//public void Start()
+//    {
+//        //01 Create a basic VoxelGrid
+//        //_voxelGrid = new VoxelGrid(new Vector3Int(10, 1, 10), transform.position, 1f);
+//        VGrid = new VoxelGrid(_gridDimensions, _voxelSize, transform.position);
+//    }
 
     public void Update()
     {

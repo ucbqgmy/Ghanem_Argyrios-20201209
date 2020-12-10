@@ -7,7 +7,7 @@ public class BruteForceFiller : MonoBehaviour
 {
     private float _voxelSize = 0.2f;
     private int _voxelOffset = 2;
-    private int _triesPerIteration = 5000;
+    private int _triesPerIteration = 200;
     private int _iterations = 100;
 
     private int _tryCounter = 0;
@@ -29,7 +29,7 @@ public class BruteForceFiller : MonoBehaviour
         {
             if (_buildingManager == null)
             {
-                GameObject manager = GameObject.Find("Manager");
+                GameObject manager = GameObject.Find("EnvironmentManager");
                 _buildingManager = manager.GetComponent<EnvironmentManager>();
             }
             return _buildingManager;
@@ -59,16 +59,20 @@ public class BruteForceFiller : MonoBehaviour
         int z = Random.Range(0, 4) * 90;
         return Quaternion.Euler(x, y, z);
     }
+
     // Start is called before the first frame update
+    [System.Obsolete]
     void Start()
     {
         _grid = BManager.CreateVoxelGrid(BoundingMesh.GetGridDimensions(_voxelOffset, _voxelSize), _voxelSize, BoundingMesh.GetOrigin(_voxelOffset, _voxelSize));
         Debug.Log(_grid.GridSize);
       //  _grid.DisableOutsideBoundingMesh();
         Random.seed = _seed;
+
     }
 
     // Update is called once per frame
+    [System.Obsolete]
     void Update()
     {
         if (Input.GetKeyDown("space"))
@@ -93,7 +97,7 @@ public class BruteForceFiller : MonoBehaviour
 
     }
     /// OnGUI is used to display all the scripted graphic user interface elements in the Unity loop
-    /*private void OnGUI()
+    private void OnGUI()
     {
         int padding = 10;
         int labelHeight = 20;
@@ -117,7 +121,7 @@ public class BruteForceFiller : MonoBehaviour
 
         }
     }
-    */ 
+     
 
     /// <summary>
     /// Method to test adding one block to the brid
@@ -184,11 +188,14 @@ public class BruteForceFiller : MonoBehaviour
     /// Brute force an entire iteration every tick
     /// </summary>
     /// <returns></returns>
+    [System.Obsolete]
     IEnumerator BruteForceEngine()
     {
         while (_iterationCounter < _iterations)
         {
+            //Random.seed = _seed++;
             Random.seed = _seed++;
+
             BruteForceStep();
             _iterationCounter++;
             yield return new WaitForSeconds(0.05f);

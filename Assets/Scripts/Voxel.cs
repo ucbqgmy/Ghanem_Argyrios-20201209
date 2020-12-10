@@ -56,6 +56,7 @@ public class Voxel : IEquatable<Voxel>
     }
     #endregion
 
+    private GameObject _VoxelGo;
 
 
     public bool IsActive;
@@ -93,12 +94,12 @@ public class Voxel : IEquatable<Voxel>
     /// <param name="index">The index of the Voxel</param>
     /// <param name="voxelgrid">The <see cref="VoxelGrid"/> this <see cref="Voxel"/> is attached to</param>
     /// <param name="voxelGameObject">The <see cref="GameObject"/> used on the Voxel</param>
-    public Voxel(Vector3Int index, VoxelGrid voxelGrid, float sizeFactor = 1f)
+    public Voxel(Vector3Int index, GameObject voxelGo, float sizeFactor = 1f)
     {
         Index = index;
-        _voxelGrid = voxelGrid;
         _size = _voxelGrid.VoxelSize;
-        _voxelGO = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        _voxelGO = GameObject.Instantiate(voxelGo, Center, Quaternion.identity);
+        _voxelGO.GetComponent<VoxelTrigger>().TriggerVoxel = this;
         _voxelGO.transform.position = (_voxelGrid.Origin + Index) * _size;
         _voxelGO.transform.localScale *= _voxelGrid.VoxelSize * sizeFactor;
         _voxelGO.name = $"Voxel_{Index.x}_{Index.y}_{Index.z}";
